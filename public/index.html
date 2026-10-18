@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0b111b">
+  <meta name="description" content="StockMarket Pro — a professional stock trading simulator with optional delayed market data.">
+  <title>StockMarket Pro — Trading Terminal</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <a class="brand" href="#"><span class="brand-mark">S</span><span>STOCKMARKET<span class="brand-light">PRO</span><small>TRADING TERMINAL</small></span></a>
+    <div class="side-label">WORKSPACE</div>
+    <button class="nav-item active" data-tab="terminal"><span>▦</span> Market terminal</button>
+    <button class="nav-item" data-tab="portfolio"><span>◫</span> Portfolio</button>
+    <button class="nav-item" data-tab="activity"><span>↕</span> Order history</button>
+    <div class="side-label market-label">MARKETS</div>
+    <div class="market-shortcuts">
+      <button data-symbol="AAPL">AAPL <span>Apple</span></button>
+      <button data-symbol="MSFT">MSFT <span>Microsoft</span></button>
+      <button data-symbol="NVDA">NVDA <span>NVIDIA</span></button>
+      <button data-symbol="GOOGL">GOOGL <span>Alphabet</span></button>
+      <button data-symbol="AMZN">AMZN <span>Amazon</span></button>
+      <button data-symbol="TSLA">TSLA <span>Tesla</span></button>
+      <button data-symbol="SPY">SPY <span>S&P 500 ETF</span></button>
+      <button data-symbol="^IXIC">IXIC <span>Nasdaq Composite</span></button>
+    </div>
+    <div class="sidebar-bottom"><span class="status-dot"></span><span>Trading simulator online</span><small>v1.0.0</small></div>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <button class="mobile-menu" id="mobileMenu" aria-label="Toggle menu">☰</button>
+      <div class="breadcrumb">Workspace <span>/</span> <b id="pageName">Market terminal</b></div>
+      <div class="top-actions">
+        <span class="market-status"><i></i> SIMULATION ACTIVE</span>
+        <button class="icon-button" id="resetBtn" title="Reset simulator">↻</button>
+        <div class="avatar">TR</div>
+      </div>
+    </header>
+    <section class="content" id="terminalView">
+      <div class="page-heading"><div><div class="eyebrow">MONDAY — PAPER TRADING</div><h1>Market overview <span class="live-pill">● DEMO</span></h1><p>Practice your strategy with virtual money. No real orders are placed.</p></div>
+        <div class="mode-switch"><button id="simMode" class="selected">Simulation</button><button id="liveMode">Market data</button></div>
+      </div>
+      <div class="metric-grid">
+        <article class="metric-card"><div class="metric-title">Portfolio value <span>↗</span></div><div class="metric-value" id="totalValue">$100,000.00</div><div class="metric-sub"><span id="totalReturn" class="positive">+$0.00 (0.00%)</span> <span>all-time return</span></div></article>
+        <article class="metric-card"><div class="metric-title">Available cash <span>◈</span></div><div class="metric-value" id="cashValue">$100,000.00</div><div class="metric-sub">Available to invest</div></article>
+        <article class="metric-card"><div class="metric-title">Invested assets <span>▤</span></div><div class="metric-value" id="investedValue">$0.00</div><div class="metric-sub">Current market value</div></article>
+        <article class="metric-card"><div class="metric-title">Open positions <span>⌗</span></div><div class="metric-value" id="positionsCount">0</div><div class="metric-sub">Across your portfolio</div></article>
+      </div>
+      <div class="terminal-grid">
+        <section class="panel chart-panel">
+          <div class="panel-header chart-head"><div><div class="ticker-overline" id="assetName">APPLE INC.</div><div class="asset-title"><h2 id="assetSymbol">AAPL</h2><span class="exchange-tag">NASDAQ</span></div><div class="asset-price"><strong id="assetPrice">$189.84</strong><span id="assetChange" class="positive">+1.24%</span></div></div>
+            <div class="chart-controls"><select id="rangeSelect" aria-label="Chart range"><option value="1d">1D</option><option value="5d">5D</option><option value="1mo">1M</option><option value="3mo">3M</option><option value="1y">1Y</option></select><button id="refreshBtn" class="subtle-button">↻ Refresh</button></div></div>
+          <div class="chart-legend"><span><i class="legend-line"></i> Price</span><span id="chartSource">SIMULATED DATA</span></div>
+          <div class="chart-wrap"><canvas id="priceChart" aria-label="Stock price chart"></canvas><div id="chartTooltip" class="chart-tooltip"></div></div>
+          <div class="chart-footer"><span id="chartPeriod">Intraday · simulated</span><span>Currency: USD</span></div>
+        </section>
+        <section class="panel order-panel">
+          <div class="panel-header"><div><h2>Place an order</h2><p class="panel-caption">Paper trading · no real money</p></div><span class="order-icon">⇄</span></div>
+          <div class="trade-toggle"><button class="buy selected" id="buyTab">Buy</button><button id="sellTab">Sell</button></div>
+          <label class="field-label" for="orderSymbol">Instrument</label><div class="symbol-input"><input id="orderSymbol" value="AAPL" maxlength="18" autocomplete="off"><button id="loadSymbol">Load</button></div>
+          <label class="field-label" for="orderType">Order type</label><select id="orderType"><option value="market">Market order</option><option value="limit">Limit order</option></select>
+          <div id="limitWrap" class="hidden"><label class="field-label" for="limitPrice">Limit price ($)</label><input id="limitPrice" type="number" min="0.01" step="0.01" placeholder="Enter limit price"></div>
+          <label class="field-label" for="quantity">Quantity (shares)</label><input id="quantity" type="number" min="0.001" step="0.001" value="1">
+          <div class="quick-quantity"><button data-qty="1">1</button><button data-qty="5">5</button><button data-qty="10">10</button><button data-qty="25">25</button><button data-qty="50">50</button></div>
+          <div class="order-summary"><div><span>Estimated price</span><b id="estimatedPrice">$189.84</b></div><div><span>Estimated total</span><b id="estimatedTotal">$189.84</b></div><div><span>Trading fee</span><b>$0.00</b></div><div class="buying-power"><span>Buying power</span><b id="buyingPower">$100,000.00</b></div></div>
+          <button id="submitOrder" class="submit-order buy-submit">Place buy order</button>
+          <p class="risk-note"><span>ⓘ</span> Virtual funds only. Prices in simulation mode are fictional.</p>
+          <div id="orderMessage" class="order-message" role="status"></div>
+        </section>
+      </div>
+      <div class="lower-grid">
+        <section class="panel">
+          <div class="panel-header"><div><h2>Watchlist</h2><p class="panel-caption">Track your favourite instruments</p></div><span class="muted-count" id="watchCount">8 assets</span></div>
+          <div class="table-scroll"><table><thead><tr><th>Instrument</th><th>Price</th><th>Change</th><th>Trend</th><th></th></tr></thead><tbody id="watchlistBody"></tbody></table></div>
+        </section>
+        <section class="panel news-panel">
+          <div class="panel-header"><div><h2>Market pulse</h2><p class="panel-caption">Simulated events and market context</p></div><span class="news-live">● ACTIVE</span></div>
+          <div id="newsList" class="news-list"></div>
+          <p class="data-disclaimer">News cards are fictional game events, not real financial news.</p>
+        </section>
+      </div>
+    </section>
+    <section class="content hidden" id="portfolioView">
+      <div class="page-heading"><div><div class="eyebrow">YOUR CAPITAL</div><h1>Portfolio</h1><p>Review holdings, cost basis and unrealised performance.</p></div><button class="subtle-button" id="exportBtn">⇩ Export CSV</button></div>
+      <div class="panel"><div class="panel-header"><div><h2>Your positions</h2><p class="panel-caption">Holdings valued at the latest available simulator price</p></div></div><div class="table-scroll"><table><thead><tr><th>Instrument</th><th>Shares</th><th>Avg. cost</th><th>Last price</th><th>Market value</th><th>Unrealised P/L</th><th></th></tr></thead><tbody id="portfolioBody"></tbody></table></div><div id="emptyPortfolio" class="empty-state">No positions yet. Buy a stock from the Market terminal to get started.</div></div>
+    </section>
+    <section class="content hidden" id="activityView">
+      <div class="page-heading"><div><div class="eyebrow">AUDIT TRAIL</div><h1>Order history</h1><p>Review completed and rejected paper trades from this session.</p></div><button class="subtle-button" id="historyExportBtn">⇩ Export CSV</button></div>
+      <div class="panel"><div class="panel-header"><div><h2>Recent activity</h2><p class="panel-caption">Most recent orders appear first</p></div><span id="orderCount" class="muted-count">0 orders</span></div><div class="table-scroll"><table><thead><tr><th>Time</th><th>Instrument</th><th>Side</th><th>Quantity</th><th>Execution price</th><th>Order type</th><th>Status</th></tr></thead><tbody id="historyBody"></tbody></table></div><div id="emptyHistory" class="empty-state">Your orders will appear here.</div></div>
+    </section>
+    <footer><span>STOCKMARKET PRO <b>v1.0</b></span><span>Educational simulator · Not investment advice · No real trading</span></footer>
+  </main>
+</div>
+<div id="toast" class="toast" role="status"></div>
+<script src="/app.js" defer></script>
+</body></html>
