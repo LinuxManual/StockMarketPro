@@ -20,7 +20,7 @@ function series(p,n=90){const a=[];for(let i=0;i<n;i++){p=Math.max(.1,p*(1+(Math
 function freshState(){return {cash:START_CASH,holdings:{},orders:[],watchlist:["AAPL","MSFT","NVDA","GOOGL","AMZN","TSLA","SPY","^IXIC"],prices:Object.fromEntries(Object.entries(assets).map(([s,a])=>[s,a.price])),history:Object.fromEntries(Object.entries(assets).map(([s,a])=>[s,series(a.price)])),events:[]}}
 function loadState(){try{const s=JSON.parse(localStorage.getItem("stockmarket-pro-state-v1"));if(s&&typeof s.cash==="number"&&s.holdings&&s.prices&&s.watchlist)return s}catch{}return freshState()}
 let state=loadState();
-function save(){try{localStorage.setItem("stockmarket-pro-state-v1",JSON.stringify(state))}catch{}}
+function save(){try{localStorage.setItem("stockmarket-pro-state-v1",JSON.stringify(state))}catch{};try{window.dispatchEvent(new CustomEvent("stockmarket:statechange",{detail:{state}}))}catch{}}
 function money(v){return new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",minimumFractionDigits:2,maximumFractionDigits:2}).format(Number.isFinite(v)?v:0)}
 function signed(v){return (v>=0?"+":"−")+money(Math.abs(v))}
 function pct(v){return (v>=0?"+":"−")+Math.abs(v).toFixed(2)+"%"}
@@ -63,5 +63,6 @@ document.addEventListener("click",e=>{const t=e.target.closest("[data-trade]");i
 $("priceChart").addEventListener("mousemove",e=>{const c=$("priceChart"),chart=c._chart;if(!chart)return;const r=c.getBoundingClientRect(),x=e.clientX-r.left;let best=chart.pts[0];for(const p of chart.pts)if(Math.abs(p.x-x)<Math.abs(best.x-x))best=p;const tip=$("chartTooltip");tip.style.display="block";tip.style.left=Math.min(Math.max(0,best.x),r.width-130)+"px";tip.style.top=Math.max(0,best.y-30)+"px";tip.textContent=money(best.v)});$("priceChart").addEventListener("mouseleave",()=>$("chartTooltip").style.display="none");
 window.addEventListener("resize",()=>{drawChart();drawSparklines()});
 function tick(){if(mode!=="sim")return;for(const s of state.watchlist){const p=price(s)* (1+(Math.random()-.499)*.0025);state.prices[s]=Math.max(.01,p);state.history[s]=[...(state.history[s]||series(p,50)),state.prices[s]].slice(-120)}if(Math.random()<.12){const ev=[{icon:"↗",title:"Unexpected earnings beat",body:"A simulated company reports results above analyst expectations.",time:"Just now"},{icon:"!",title:"Volatility spike detected",body:"A fictional macro headline moves prices across the market.",time:"Just now"},{icon:"◈",title:"Sector rotation underway",body:"Simulated investors rotate capital between defensive and growth sectors.",time:"Just now"}];state.events.unshift(ev[Math.floor(Math.random()*ev.length)]);state.events=state.events.slice(0,4)}renderAll();drawChart()}
+window.addEventListener("stockmarket:cloudload",e=>{const s=e.detail?.state;if(!s||typeof s.cash!=="number"||!s.holdings||!s.prices||!Array.isArray(s.watchlist))return;state={...freshState(),...s};save();renderAll();drawChart();toast("Your portfolio was restored from Firebase.")});
 renderAll();drawChart();setInterval(tick,7000);
 })();
