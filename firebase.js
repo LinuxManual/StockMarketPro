@@ -22,6 +22,7 @@ let userId = null;
 let saveTimer = null;
 let ready = false;
 let lastState = null;
+let lastSyncedKey = "";
 const app = initializeApp(firebaseConfig, "stockmarket-pro");
 const auth = getAuth(app);
 const db = getFirestore(app);
@@ -43,13 +44,25 @@ function cleanState(s) {
     events: (s.events || []).slice(0, 8)
   };
 }
+function meaningfulKey(state) {
+  return JSON.stringify({
+    cash: state.cash,
+    holdings: state.holdings,
+    watchlist: state.watchlist,
+    orderCount: (state.orders || []).length,
+    lastOrder: (state.orders || []).slice(-1)[0] || null
+  });
+}
 async function syncState(state) {
   if (!userId || !ready || !state) return;
+  const key = meaningfulKey(state);
+  if (key === lastSyncedKey) return;
   try {
     await setDoc(doc(db, "stockmarket_users", userId), {
       state: cleanState(state),
       updatedAt: serverTimestamp()
     }, { merge: true });
+    lastSyncedKey = key;
     showStatus("connected", "Cloud sync active · portfolio saved");
   } catch (err) {
     console.error("Firebase save failed:", err);
