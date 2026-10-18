@@ -29,8 +29,10 @@ Select **Market data** in the app to request a quote and chart for the currently
 
 The default game values are fictional demonstration values. Simulation mode changes them randomly and should not be interpreted as actual market prices. In market-data mode, fetched quotes update the displayed valuation for any holdings in that symbol.
 
-## Deployment
-Deploy to a Node.js host that supports a long-running server (for example, a suitable VPS or Node hosting platform). Static-only hosting such as GitHub Pages cannot run `server.js`, so the market-data proxy endpoint will not work there. You can deploy the static `public/` folder to a static host for simulation-only play, but configure a backend proxy before enabling live market data in production.
+## Public website (GitHub Pages)
+A GitHub Actions workflow in `.github/workflows/deploy.yml` publishes the `public/` folder automatically whenever changes are pushed to `main`. In GitHub, open **Settings → Pages** and set the build/deployment source to **GitHub Actions** if it is not already selected. Once the workflow succeeds, the public site should be available at https://linuxmanual.github.io/StockMarketPro/.
+
+GitHub Pages is static hosting: the simulation game works in the browser, but it cannot run `server.js` or the `/api` market-data proxy. For live/delayed market-data mode, deploy the Node.js server to a suitable Node host and configure the frontend to call that backend. Until then, use Simulation mode.
 
 ## Important production improvements
 Before a public launch, add authentication, server-side portfolios and order validation, rate limiting, a licensed market-data provider, automated tests, CSP/security headers, persistent database storage, and multiplayer/leaderboards if required. Browser localStorage is per-browser and can be edited by the user, so it is not suitable for competitive rankings or valuable accounts.
