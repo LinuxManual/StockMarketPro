@@ -98,3 +98,7 @@ button:focus-visible,a:focus-visible{outline:2px solid #43e0ad;outline-offset:3p
 @media(max-width:1000px){.tape-note{display:none}.tape-item{min-width:125px;padding:0 14px}}
 @media(max-width:700px){.market-tape{padding:0 14px;min-height:60px}.tape-label{padding-right:12px}.tape-item{min-width:112px;padding:0 11px}.content{padding:21px 14px}.metric-grid{gap:9px}.metric-card{padding:15px 13px}.terminal-grid,.lower-grid{gap:12px}.page-heading h1{font-size:25px}.chart-wrap{margin:0 8px}.panel-header{padding:16px 14px 13px}.chart-head{padding:18px 14px 12px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+
+/* Firebase cloud status */
+.cloud-status{display:flex;align-items:center;gap:9px;margin:0 0 18px;padding:10px 13px;border:1px solid var(--border);border-radius:12px;background:linear-gradient(90deg,rgba(57,214,162,.07),rgba(17,27,41,.82));color:var(--muted);font-size:12px}.cloud-status small{margin-left:auto;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}.cloud-dot{width:8px;height:8px;border-radius:50%;background:#e0ad55;box-shadow:0 0 0 4px rgba(224,173,85,.12);flex:none}.cloud-status.connected .cloud-dot{background:var(--green);box-shadow:0 0 0 4px rgba(57,214,162,.12)}.cloud-status.error .cloud-dot{background:var(--red);box-shadow:0 0 0 4px rgba(255,109,122,.12)}.cloud-status b{color:var(--text);font-weight:700}
